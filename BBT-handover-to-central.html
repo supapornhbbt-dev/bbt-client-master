@@ -1,0 +1,425 @@
+<title>ส่งมอบระบบ BBT Client Master</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap">
+
+<style>
+/* หน้าตาทั้งหมดยึดตาม DESIGN-BBT.md — ห้ามเพิ่มสีนอกชุดนี้
+   คู่มือกำหนดธีมสว่างแบบ iOS ไว้ชุดเดียว หน้านี้จึงคุมสีเองทั้งหมดไม่สลับตามเครื่องผู้อ่าน */
+:root{
+  --brand:#8cc63f; --brand-50:#f3faea; --brand-100:#e4f3cd; --brand-600:#6fae2b; --brand-700:#557f25;
+  --ink:#1c1c1e; --ink-2:#3a3a3c; --muted:#8e8e93;
+  --fill:#f2f2f7; --card:#ffffff; --sep:#e5e5ea;
+  --ok:#34c759; --warn:#ff9f0a; --danger:#ff3b30; --info:#0a84ff;
+  --shadow:0 1px 2px rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.04);
+  --font:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Helvetica Neue','Sarabun',sans-serif;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--fill); color:var(--ink); font-family:var(--font);
+  font-size:16px; line-height:1.75; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:62rem; margin:0 auto; padding:0 1rem 5rem}
+@media (min-width:700px){ .wrap{padding-inline:1.5rem} }
+
+/* ---------- หัวเรื่อง ---------- */
+header{padding:3rem 0 1.75rem}
+.eyebrow{font-size:.8rem; font-weight:700; letter-spacing:.06em; color:var(--brand-700); margin:0 0 .6rem}
+h1{font-size:28px; font-weight:800; line-height:1.3; margin:0 0 .6rem; text-wrap:balance}
+@media (min-width:700px){ h1{font-size:34px} }
+.lede{font-size:1.05rem; color:var(--ink-2); margin:0; max-width:44rem}
+.stamps{display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.35rem}
+.stamp{
+  background:var(--card); border:1px solid var(--sep); border-radius:999px;
+  padding:.3rem .9rem; font-size:.85rem; color:var(--ink-2);
+  font-variant-numeric:tabular-nums; box-shadow:var(--shadow);
+}
+.stamp b{font-weight:700; color:var(--ink)}
+
+/* ---------- ส่วน ---------- */
+section{padding-top:2.5rem}
+h2{font-size:1.4rem; font-weight:700; line-height:1.4; margin:0 0 .3rem; text-wrap:balance}
+h2 .num{
+  display:inline-block; min-width:1.6rem; margin-inline-end:.45rem;
+  color:var(--brand-700); font-size:.95rem; font-weight:700; font-variant-numeric:tabular-nums;
+}
+h3{font-size:1.02rem; font-weight:700; margin:1.75rem 0 .5rem}
+.sub{color:var(--muted); margin:.1rem 0 1.25rem; max-width:44rem}
+p{margin:0 0 .9rem; max-width:46rem}
+strong{font-weight:700}
+code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.86em;
+  background:var(--fill); border:1px solid var(--sep); border-radius:6px; padding:.06em .38em;
+}
+
+/* ---------- การ์ดพื้นฐาน ---------- */
+.card{background:var(--card); border-radius:16px; box-shadow:var(--shadow); padding:1.15rem 1.3rem}
+
+/* ---------- แผนผัง 3 ชั้น ---------- */
+.stack{display:flex; flex-direction:column; gap:.5rem; margin:1.25rem 0 0}
+.layer{display:grid; grid-template-columns:auto 1fr; gap:.3rem .9rem; align-items:baseline}
+.layer .tag{
+  grid-row:1; font-size:.75rem; font-weight:700; color:var(--brand-700);
+  background:var(--brand-50); border-radius:999px; padding:.12rem .7rem; white-space:nowrap;
+}
+.layer .name{grid-row:1; font-weight:700; font-size:1.05rem}
+.layer .detail{grid-column:1/-1; color:var(--ink-2); font-size:.94rem; line-height:1.7; margin-top:.15rem}
+.flowarrow{text-align:center; color:var(--muted); font-size:.83rem; padding:.1rem 0}
+
+/* ---------- ตาราง ---------- */
+.tablewrap{overflow-x:auto; background:var(--card); border-radius:16px; box-shadow:var(--shadow); margin:1.25rem 0 0}
+table{border-collapse:collapse; width:100%; min-width:33rem; font-size:.92rem}
+th,td{text-align:start; padding:.6rem 1rem; border-bottom:1px solid var(--sep); vertical-align:top}
+thead th{font-size:.78rem; font-weight:600; color:var(--muted); white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:rgba(140,198,63,.07)}
+tbody tr.grouprow:hover{background:var(--brand-50)}
+td.n{text-align:end; font-variant-numeric:tabular-nums; white-space:nowrap; font-weight:600}
+td.k{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.85rem; white-space:nowrap}
+.grouprow td{background:var(--brand-50); color:var(--brand-700); font-weight:700; font-size:.83rem; padding-block:.4rem}
+.muted{color:var(--muted)}
+
+/* ---------- ขั้นตอน ---------- */
+ol.steps{list-style:none; counter-reset:s; padding:0; margin:1.25rem 0 0; display:flex; flex-direction:column; gap:.5rem}
+ol.steps>li{
+  counter-increment:s; background:var(--card); border-radius:16px; box-shadow:var(--shadow);
+  padding:1.05rem 1.3rem 1.05rem 3.3rem; position:relative;
+}
+ol.steps>li::before{
+  content:counter(s); position:absolute; inset-inline-start:1.1rem; top:1.05rem;
+  width:1.55rem; height:1.55rem; border-radius:999px; background:var(--brand-50); color:var(--brand-700);
+  font-size:.83rem; font-weight:700; display:flex; align-items:center; justify-content:center;
+  font-variant-numeric:tabular-nums;
+}
+ol.steps b{display:block; font-weight:700; margin-bottom:.1rem}
+ol.steps p{margin:0; color:var(--ink-2); font-size:.94rem}
+.who{
+  display:inline-block; margin-top:.55rem; font-size:.78rem; font-weight:600;
+  color:var(--brand-700); background:var(--brand-50); border-radius:999px; padding:.12rem .7rem;
+}
+
+/* ---------- ทางเลือก ---------- */
+.paths{display:grid; grid-template-columns:repeat(auto-fit,minmax(18rem,1fr)); gap:.75rem; margin-top:1.25rem}
+.path{background:var(--card); border-radius:16px; box-shadow:var(--shadow); padding:1.2rem 1.3rem}
+.path.pick{box-shadow:0 0 0 1.5px var(--brand), var(--shadow)}
+.path h4{font-size:1.05rem; font-weight:700; margin:.55rem 0 .4rem}
+.path ul{margin:.55rem 0 0; padding-inline-start:1.15rem; color:var(--ink-2); font-size:.92rem}
+.path li{margin-bottom:.28rem}
+.chip{display:inline-block; font-size:.75rem; font-weight:700; border-radius:999px; padding:.12rem .7rem; white-space:nowrap}
+.chip.brand{color:var(--brand-700); background:var(--brand-50)}
+.chip.grey{color:var(--muted); background:var(--fill)}
+.chip.hi{color:var(--danger); background:#ffeceb}
+.chip.mid{color:#a1620a; background:#fff4e2}
+
+/* ---------- ข้อควรระวัง ---------- */
+.risks{display:flex; flex-direction:column; gap:.5rem; margin-top:1.25rem}
+.risk{background:var(--card); border-radius:16px; box-shadow:var(--shadow); padding:1.05rem 1.3rem; border-inline-start:4px solid var(--sep)}
+.risk.hi{border-inline-start-color:var(--danger)}
+.risk.mid{border-inline-start-color:var(--warn)}
+.risk .head{display:flex; flex-wrap:wrap; align-items:center; gap:.55rem; margin-bottom:.25rem}
+.risk .head b{font-weight:700; font-size:1rem}
+.risk p{margin:0; color:var(--ink-2); font-size:.94rem}
+.risk .fix{margin-top:.5rem; font-size:.92rem}
+.risk .fix b{color:var(--ink); font-weight:700}
+
+/* ---------- เช็กลิสต์ ---------- */
+ul.check{list-style:none; padding:0; margin:1.25rem 0 0; display:flex; flex-direction:column; gap:.4rem}
+ul.check li{
+  display:grid; grid-template-columns:1.4rem 1fr; gap:.55rem; align-items:baseline;
+  background:var(--card); border-radius:12px; box-shadow:var(--shadow); padding:.7rem 1rem; font-size:.94rem;
+}
+ul.check li::before{content:"☐"; color:var(--muted); font-size:1.05rem; line-height:1}
+
+/* ---------- เทียบคู่มือ ---------- */
+.gap{display:flex; flex-direction:column; gap:.4rem; margin-top:1rem}
+.gapitem{background:var(--card); border-radius:12px; box-shadow:var(--shadow); padding:.75rem 1rem; font-size:.93rem}
+.gapitem .lbl{font-weight:700}
+.swatch{display:inline-block; width:.75rem; height:.75rem; border-radius:3px; vertical-align:-1px; margin-inline-end:.25rem; border:1px solid rgba(0,0,0,.12)}
+
+footer{margin-top:3rem; padding-top:1.25rem; border-top:1px solid var(--sep); color:var(--muted); font-size:.86rem}
+</style>
+
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">เอกสารเตรียมส่งมอบ · สำนักงาน BeBigTree</p>
+  <h1>ระบบทะเบียนลูกค้า BBT ก่อนย้ายเข้าบ้านกลาง</h1>
+  <p class="lede">สรุปว่าระบบประกอบด้วยอะไร วางอยู่บนบัญชีของใคร ข้อมูลมีเท่าไร ต้องทำอะไรบ้างเพื่อย้าย และมีอะไรที่พลาดแล้วเจ็บ</p>
+  <div class="stamps">
+    <span class="stamp">ข้อมูล ณ <b>3 ก.ย. 2569</b></span>
+    <span class="stamp">ฐานข้อมูล <b>22 ตาราง · 14 MB</b></span>
+    <span class="stamp">เว็บ <b>bbt-client-master.pages.dev</b></span>
+    <span class="stamp">ผู้ใช้ <b>22 บัญชี</b></span>
+  </div>
+</header>
+
+<section>
+  <h2><span class="num">1</span>ระบบประกอบด้วยอะไร</h2>
+  <p class="sub">ทั้งระบบมีแค่ 3 ชั้น และไม่มีเซิร์ฟเวอร์ของเราเองเลยสักตัว เว็บคุยกับฐานข้อมูลตรง ๆ จากเบราว์เซอร์ของผู้ใช้</p>
+
+  <div class="stack">
+    <div class="card layer">
+      <span class="tag">ชั้นหน้าเว็บ</span>
+      <span class="name">Cloudflare Pages</span>
+      <span class="detail">ไฟล์เดียวจบ — <code>webapp/index.html</code> 5,489 บรรทัด (541 KB) พร้อม <code>logo.png</code> ไม่มีขั้นตอน build ไม่มี framework แก้ไฟล์แล้วรัน <code>deploy.sh</code> ขึ้นได้เลย · ตอนนี้ไฟล์ในเครื่องกับที่ออนไลน์ตรงกันทุกไบต์</span>
+    </div>
+    <div class="flowarrow">↓ เรียกข้อมูลตรงจากเบราว์เซอร์ผู้ใช้</div>
+    <div class="card layer">
+      <span class="tag">ชั้นข้อมูล</span>
+      <span class="name">Supabase (PostgreSQL 17)</span>
+      <span class="detail">รวมทุกอย่างไว้ที่เดียว — ฐานข้อมูล 22 ตาราง · ระบบล็อกอิน 22 บัญชี · ที่เก็บไฟล์แนบ <code>liqdocs</code> แบบไม่เปิดสาธารณะ · ฟังก์ชันหลังบ้าน 1 ตัว <code>admin-create-user</code> ให้แอดมินเปิดบัญชีใหม่ได้เอง · เครื่องอยู่สิงคโปร์ · แพ็กเกจฟรี</span>
+    </div>
+    <div class="flowarrow">↑ นำเข้าครั้งแรกและอัปเดตเป็นรอบ</div>
+    <div class="card layer">
+      <span class="tag">ชั้นต้นทาง</span>
+      <span class="name">ไฟล์งานในเครื่อง</span>
+      <span class="detail">Excel ต้นฉบับ (Client Master Database, Employee Task Allocation, GL รายได้, ไฟล์ DBD และ ภ.ง.ด.51) พร้อมสคริปต์ในโฟลเดอร์ <code>supabase-setup/</code> ที่ใช้สร้างโครงและนำเข้าข้อมูลรอบแรก</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">2</span>เครื่องมือที่ใช้ และใครเป็นเจ้าของบัญชี</h2>
+  <p class="sub">คอลัมน์ขวาสุดคือหัวใจของการย้าย — ทุกบรรทัดที่เขียนว่าบัญชีส่วนตัว คือสิ่งที่ต้องเปลี่ยนมือ</p>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>ส่วน</th><th>เครื่องมือ</th><th>ค่าใช้จ่าย</th><th>บัญชีเจ้าของตอนนี้</th></tr></thead>
+      <tbody>
+        <tr><td>โฮสต์เว็บ</td><td>Cloudflare Pages</td><td>ฟรี ไม่จำกัดจำนวนครั้ง</td><td>บัญชีส่วนตัว</td></tr>
+        <tr><td>ฐานข้อมูล ล็อกอิน ไฟล์แนบ</td><td>Supabase แพ็กเกจฟรี</td><td>ฟรี</td><td>องค์กรชื่อ “supapornh.bbt@gmail.com’s Project”</td></tr>
+        <tr><td>ไลบรารีในหน้าเว็บ</td><td>supabase-js 2 · SheetJS 0.18.5 · pdf.js 3.11</td><td>ฟรี</td><td>โหลดจากแหล่งภายนอกทุกครั้งที่เปิดเว็บ</td></tr>
+        <tr><td>ข้อมูลนิติบุคคล</td><td>DBD OpenAPI</td><td>ฟรี</td><td>เรียกจากหน้าเว็บโดยตรง</td></tr>
+        <tr><td>ตรวจสถานะ VAT</td><td>บริการของกรมสรรพากร (rdws.rd.go.th)</td><td>ฟรี ไม่ต้องสมัคร</td><td>ทำผ่านสคริปต์เป็นครั้ง ๆ ไม่ได้อยู่ในเว็บ</td></tr>
+        <tr><td>โฮสต์เว็บเดิม</td><td>Netlify <span class="muted">(เลิกใช้แล้ว ยังออนไลน์เวอร์ชันเก่า)</span></td><td>เครดิตหมด</td><td>บัญชีส่วนตัว</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">3</span>ข้อมูลที่มีอยู่จริงในฐานข้อมูล</h2>
+  <p class="sub">รวมประมาณ 5,000 แถว ขนาด 14 MB ถือว่าเล็กมาก ย้ายได้ในไม่กี่นาที ตัวเลขนี้นับสด ณ วันที่จัดทำเอกสาร</p>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>ตาราง</th><th>เก็บอะไร</th><th style="text-align:end">แถว</th></tr></thead>
+      <tbody>
+        <tr class="grouprow"><td colspan="3">ทะเบียนหลัก — เปลี่ยนไม่บ่อย</td></tr>
+        <tr><td class="k">client</td><td>ทะเบียนลูกค้า ใช้เลขผู้เสียภาษี 13 หลักเป็นกุญแจ</td><td class="n">220</td></tr>
+        <tr><td class="k">service_job</td><td>บริการที่รับทำของแต่ละราย พร้อมค่าบริการต่อเดือน</td><td class="n">658</td></tr>
+        <tr><td class="k">staff</td><td>พนักงาน รวมตัวยืน CLIENT · PARTNER · TRAINEE</td><td class="n">23</td></tr>
+        <tr><td class="k">business_nature</td><td>ประเภทธุรกิจและคะแนนความยาก</td><td class="n">15</td></tr>
+        <tr><td class="k">task_template</td><td>แม่แบบงานตามประเภทธุรกิจ</td><td class="n">18</td></tr>
+        <tr><td class="k">coa_mapping</td><td>ผังบัญชีอ้างอิง เดบิต เครดิต VAT หัก ณ ที่จ่าย</td><td class="n">12</td></tr>
+
+        <tr class="grouprow"><td colspan="3">ข้อมูลรายปี — สร้างปีใหม่ด้วยปุ่ม Duplicate</td></tr>
+        <tr><td class="k">assignment</td><td>ใครรับผิดชอบบริษัทไหน บทบาทอะไร ปีไหน</td><td class="n">2,176</td></tr>
+        <tr><td class="k">workload_year</td><td>ปริมาณงาน คะแนน และชั่วโมงต่อบริษัทต่อปี</td><td class="n">429</td></tr>
+        <tr><td class="k">financial_period</td><td>รายได้ ค่าใช้จ่าย ภาษี รายรอบบัญชี</td><td class="n">1</td></tr>
+
+        <tr class="grouprow"><td colspan="3">งานที่ติดตามรายเดือนและรายปี</td></tr>
+        <tr><td class="k">tax_month</td><td>ภาษีรายเดือน ภ.พ.30 · ภ.ง.ด.1/3/53 · ประกันสังคม</td><td class="n">1,186</td></tr>
+        <tr><td class="k">tax_year</td><td>ภาษีรายปี ภ.ง.ด.50/51 · งบการเงิน · ส.บช.3</td><td class="n">2</td></tr>
+        <tr><td class="k">liquidation</td><td>งานชำระบัญชีของบริษัทที่จดเลิก</td><td class="n">12</td></tr>
+        <tr><td class="k">registration_job</td><td>งานจดทะเบียน DBD สรรพากร ประกันสังคม</td><td class="n">1</td></tr>
+        <tr><td class="k">audit_jobs</td><td>แผนงานตรวจสอบบัญชี</td><td class="n">52</td></tr>
+        <tr><td class="k">audit_assignments</td><td>ทีมที่ลงงานตรวจสอบ</td><td class="n">14</td></tr>
+        <tr><td class="k">audit_staff</td><td>รายชื่อทีมตรวจสอบ</td><td class="n">13</td></tr>
+
+        <tr class="grouprow"><td colspan="3">ระบบและการตั้งค่า</td></tr>
+        <tr><td class="k">app_setting</td><td><b>สำคัญที่สุด</b> — สิทธิ์ผู้ใช้ ลำดับและความกว้างคอลัมน์ สัดส่วนแบ่งชั่วโมง ความจุชั่วโมง กลุ่มทีม คอลัมน์ที่ล็อก รวม 15 คีย์</td><td class="n">15</td></tr>
+        <tr><td class="k">app_user</td><td class="muted">ตารางเก่าจากตอนออกแบบแรก <b>ว่างเปล่า ไม่ได้ใช้แล้ว</b></td><td class="n">0</td></tr>
+
+        <tr class="grouprow"><td colspan="3">ตกค้าง — เว็บไม่เรียกใช้เลยและไม่มีสิทธิ์เข้าถึงตั้งไว้</td></tr>
+        <tr><td class="k muted">audit_log · audit_holidays<br>audit_clients · audit_users</td><td class="muted">ค้างจากตอนทดลองทำแถบตรวจสอบบัญชี ต้องตัดสินใจว่าจะยกไปหรือทิ้ง</td><td class="n muted">169</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>นอกฐานข้อมูล</h3>
+  <p><b>ไฟล์แนบ</b> — ที่เก็บไฟล์ <code>liqdocs</code> ไม่เปิดสาธารณะ ตอนนี้มี 1 ไฟล์ 0.75 MB ใช้เก็บเอกสารงานชำระบัญชีและไฟล์แนบภาษีรายเดือน จะโตขึ้นเรื่อย ๆ ตามการใช้งาน</p>
+  <p><b>บัญชีผู้ใช้</b> — 22 บัญชี โดเมน bebigtree.com ทั้งหมด แต่<b>เคยล็อกอินจริงเพียง 6 บัญชี</b> ระบบปิดการสมัครเอง แอดมินเป็นคนเปิดบัญชีให้</p>
+</section>
+
+<section>
+  <h2><span class="num">4</span>เลือกวิธีย้ายก่อน แล้วขั้นตอนจะต่างกันมาก</h2>
+  <p class="sub">คำถามเดียวที่ต้องตอบให้ได้ก่อนเริ่ม คือบ้านกลางจะรับโปรเจกต์เดิมทั้งก้อน หรือจะตั้งของใหม่แล้วยกข้อมูลไป</p>
+
+  <div class="paths">
+    <div class="path pick">
+      <span class="chip brand">แนะนำ</span>
+      <h4>ทาง ก · โอนโปรเจกต์ทั้งก้อน</h4>
+      <p style="font-size:.93rem;color:var(--ink-2);margin:0">ย้าย Supabase ไปอยู่ใต้องค์กรของบ้านกลาง แล้วโอนโปรเจกต์ Cloudflare Pages ตามไป</p>
+      <ul>
+        <li>ที่อยู่เว็บและกุญแจเดิมทั้งหมด <b>ไม่ต้องแก้โค้ดสักบรรทัด</b></li>
+        <li>บัญชีผู้ใช้ 22 คนพร้อมรหัสผ่านอยู่ครบ ไม่ต้องแจ้งใครทำอะไร</li>
+        <li>ไฟล์แนบ ฟังก์ชันหลังบ้าน สิทธิ์ต่าง ๆ ติดไปเองทั้งหมด</li>
+        <li>เงื่อนไข: บ้านกลางต้องมีองค์กรใน Supabase ก่อน และผู้โอนต้องเป็นเจ้าของทั้งสองฝั่ง ให้เช็กเงื่อนไขแพ็กเกจ ณ วันโอนอีกครั้ง</li>
+      </ul>
+    </div>
+    <div class="path">
+      <span class="chip grey">ทางสำรอง</span>
+      <h4>ทาง ข · สร้างใหม่แล้วยกข้อมูลไป</h4>
+      <p style="font-size:.93rem;color:var(--ink-2);margin:0">เปิดโปรเจกต์ใหม่ในบัญชีบ้านกลาง แล้วนำโครงสร้างและข้อมูลเข้าไปใหม่</p>
+      <ul>
+        <li>ต้องแก้ 2 บรรทัดในหน้าเว็บ (ที่อยู่และกุญแจฐานข้อมูล บรรทัด 138–139)</li>
+        <li><b>บัญชีผู้ใช้และรหัสผ่านไม่ไปด้วย</b> ต้องเปิดใหม่ 22 บัญชีและแจ้งทุกคนตั้งรหัสใหม่</li>
+        <li>ต้องยกเองทีละอย่าง ตาราง สิทธิ์ ทริกเกอร์ ฟังก์ชัน ที่เก็บไฟล์ และฟังก์ชันหลังบ้าน</li>
+        <li>ข้อดี: ได้จังหวะล้างของตกค้างและตั้งสิทธิ์ใหม่ให้ถูกตั้งแต่ต้น</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">5</span>ขั้นตอนการย้าย</h2>
+  <p class="sub">เรียงตามลำดับจริง ข้อ 1–4 ทำได้เลยไม่ว่าจะเลือกทางไหน และควรทำก่อนคุยเรื่องวันโอนด้วยซ้ำ</p>
+
+  <ol class="steps">
+    <li><b>สำรองข้อมูลให้ครบก่อนแตะอะไรทั้งสิ้น</b>
+      <p>สำรองฐานข้อมูลทั้งก้อนเป็นไฟล์เดียว พร้อมส่งออกทุกตารางเป็น CSV เผื่อไว้อีกชุด และดาวน์โหลดไฟล์แนบทั้งหมดออกมา เก็บไว้คนละที่กับบัญชีที่กำลังจะย้าย</p>
+      <span class="who">ทำเองได้ ประมาณ 15 นาที</span></li>
+
+    <li><b>เอาโค้ดขึ้นที่เก็บโค้ดกลาง แล้วให้สิทธิ์บ้านกลาง</b>
+      <p>ตอนนี้โค้ดทั้งระบบเป็นไฟล์เดียวในเครื่อง สำรองด้วยการก๊อปเป็นไฟล์ <code>.bak</code> ไปเรื่อย ๆ ถึงเบอร์ 8 ซึ่งใช้ส่งมอบไม่ได้ ให้สร้างที่เก็บโค้ดแล้วใส่ <code>webapp/</code> <code>supabase-setup/</code> <code>deploy.sh</code> และเอกสารฉบับนี้ลงไป</p>
+      <span class="who">ต้องทำก่อนส่งมอบ</span></li>
+
+    <li><b>ดึงโค้ดฟังก์ชันหลังบ้านลงมาเก็บ</b>
+      <p><code>admin-create-user</code> มีอยู่บน Supabase ที่เดียว ไม่มีสำเนาในเครื่อง ถ้าโปรเจกต์หายหรือย้ายแบบสร้างใหม่ ความสามารถให้แอดมินเปิดบัญชีให้พนักงานจะหายไปเงียบ ๆ</p>
+      <span class="who">5 นาที</span></li>
+
+    <li><b>ทำบัญชีรายการสิ่งที่ผูกกับคนเดิม</b>
+      <p>กุญแจเข้าระบบ 3 ใบในเครื่อง (Supabase · Cloudflare · Netlify) องค์กร Supabase ที่ยังใช้ชื่ออีเมลส่วนตัว บัญชี Cloudflare และรายชื่อแอดมินที่ฝังอยู่ในโค้ด ทั้งหมดนี้ต้องมีเจ้าของใหม่หรือถูกยกเลิก</p>
+      <span class="who">ทำพร้อมข้อ 2</span></li>
+
+    <li><b>นัดวันโอน แล้วหยุดแก้ข้อมูลชั่วคราว</b>
+      <p>แจ้งทีมว่าช่วงเวลานี้ห้ามกรอกงาน ประมาณ 1 ชั่วโมงก็พอเพราะข้อมูลแค่ 14 MB จากนั้นสำรองซ้ำอีกครั้งให้เป็นชุดล่าสุดจริง ๆ</p>
+      <span class="who">แจ้งล่วงหน้า 1 วัน</span></li>
+
+    <li><b>ย้ายฝั่งข้อมูล</b>
+      <p>ทาง ก กดโอนโปรเจกต์เข้าองค์กรบ้านกลาง · ทาง ข สร้างโปรเจกต์ใหม่ที่สิงคโปร์ แล้วนำเข้าโครงสร้างและข้อมูล ตามด้วยสิทธิ์ ทริกเกอร์ ฟังก์ชัน และที่เก็บไฟล์</p>
+      <span class="who">30–60 นาที</span></li>
+
+    <li><b>ตรวจว่าย้ายครบจริง ไม่ใช่แค่ดูเหมือนครบ</b>
+      <p>นับจำนวนแถวทุกตารางเทียบกับตัวเลขในหัวข้อ 3 · เปิดไฟล์แนบให้ขึ้นจริงอย่างน้อย 1 ไฟล์ · ลองเรียกฟังก์ชันหลังบ้านให้ตอบกลับ · ทดสอบล็อกอิน 3 แบบคือแอดมิน ผู้จัดการ และพนักงานทั่วไป แล้วดูว่าเห็นแถบและตัวเลขเงินตรงกับที่ควรเห็น</p>
+      <span class="who">ห้ามข้าม</span></li>
+
+    <li><b>ย้ายฝั่งเว็บและปิดของเก่า</b>
+      <p>โอนหรือสร้างโปรเจกต์ Cloudflare Pages ใหม่ · ถ้าไปทาง ข ให้แก้ 2 บรรทัดแล้วส่งขึ้น · แจ้งทีมเปลี่ยนที่คั่นหน้า · ปิดเว็บ Netlify เวอร์ชันเก่าที่ยังออนไลน์อยู่ กันสับสน</p>
+      <span class="who">แจ้งทีม 5 บัญชีที่ใช้จริง</span></li>
+
+    <li><b>ยกเลิกกุญแจเก่าทั้งหมด</b>
+      <p>เพิกถอนกุญแจ Supabase Cloudflare และ Netlify แล้วลบไฟล์ <code>~/.bbt-*</code> ในเครื่อง จากนั้นให้เจ้าของใหม่ออกกุญแจของตัวเอง ทำหลังตรวจข้อ 7 ผ่านแล้วเท่านั้น</p>
+      <span class="who">ปิดงาน</span></li>
+  </ol>
+</section>
+
+<section>
+  <h2><span class="num">6</span>ข้อควรระวัง</h2>
+  <p class="sub">เรียงตามความแรงถ้าพลาด สามข้อแรกไม่ใช่เรื่องเทคนิคล้วน ๆ แต่กระทบว่าใครเห็นอะไรได้บ้างหลังย้าย</p>
+
+  <div class="risks">
+
+    <div class="risk hi">
+      <div class="head"><b>ทุกคนที่ล็อกอินได้ อ่านและแก้ได้ทุกตาราง</b><span class="chip hi">เสี่ยงสูง</span></div>
+      <p>สิทธิ์ในฐานข้อมูลตั้งไว้แบบเดียวกันหมดคือล็อกอินแล้วทำได้ทุกอย่าง ส่วนการซ่อนค่าบริการ ซ่อนแถบ หรือให้เห็นเฉพาะพอร์ตตัวเอง เป็นการซ่อน<b>ระดับหน้าจอเท่านั้น</b> ใครเรียกข้อมูลตรงก็เห็นทั้งฐาน รวมค่าบริการลูกค้าทุกราย</p>
+      <p class="fix"><b>ก่อนย้าย</b> ยอมรับเงื่อนไขนี้อย่างรู้ตัว หรือถือโอกาสตอนย้ายทำสิทธิ์ระดับฐานข้อมูลจริง เพราะบ้านกลางมักมีคนเข้าถึงมากกว่าเดิม ความเสี่ยงจะไม่เท่าเดิม</p>
+    </div>
+
+    <div class="risk hi">
+      <div class="head"><b>สิทธิ์แอดมินผูกกับชื่อหน้าอีเมล ไม่ใช่ตัวบัญชี</b><span class="chip hi">เสี่ยงสูง</span></div>
+      <p>ระบบตัดอีเมลเอาส่วนหน้าเครื่องหมาย @ มาเทียบกับรายชื่อ apichart · sumeth · supapornh · tulaya ถ้าบ้านกลางใช้อีเมลรูปแบบอื่น เช่นเติมนามสกุลย่อ สิทธิ์แอดมินจะหลุดทันที และรายชื่อชุดนี้ยัง<b>ฝังไว้ในโค้ดหน้าเว็บ</b>เป็นค่าตั้งต้นด้วย ไม่ได้อยู่ในฐานข้อมูลอย่างเดียว</p>
+      <p class="fix"><b>ก่อนย้าย</b> ตกลงรูปแบบอีเมลของบ้านกลางให้ชัด แล้วอัปเดตทั้งค่าในฐานข้อมูลและค่าตั้งต้นในโค้ด พร้อมเผื่อบัญชีแอดมินไว้อย่างน้อย 2 คน กันล็อกตัวเองออก</p>
+    </div>
+
+    <div class="risk hi">
+      <div class="head"><b>ข้อมูลอ่อนไหวมากกว่าที่คิด</b><span class="chip hi">เสี่ยงสูง</span></div>
+      <p>ในฐานมีเลขผู้เสียภาษี 220 บริษัท ค่าบริการรายเดือนรายราย และชั่วโมงกับภาระงานรายพนักงาน คือข้อมูลลูกค้าและข้อมูลพนักงานปนกันอยู่ การย้ายไปอยู่ใต้บัญชีของอีกหน่วยงานคือการเปลี่ยนผู้ควบคุมข้อมูล</p>
+      <p class="fix"><b>ก่อนย้าย</b> ตกลงให้ชัดว่าใครในบ้านกลางเห็นได้บ้าง และบันทึกข้อตกลงเป็นลายลักษณ์อักษรตามหลัก PDPA</p>
+    </div>
+
+    <div class="risk mid">
+      <div class="head"><b>ไม่มีที่เก็บโค้ดกลาง และแพ็กเกจฟรีย้อนเวลาไม่ได้</b><span class="chip mid">เสี่ยงกลาง</span></div>
+      <p>โค้ดสำรองด้วยการก๊อปไฟล์ถึงเบอร์ 8 และ Supabase แพ็กเกจฟรีไม่มีการย้อนข้อมูลกลับไปยังจุดเวลาใดก็ได้ ถ้าใครลบข้อมูลผิดระหว่างช่วงส่งมอบ จะกู้ได้แค่ถึงจุดที่สำรองไว้เอง</p>
+      <p class="fix"><b>ก่อนย้าย</b> สำรองทั้งก่อนและหลังทุกครั้ง และตั้งการสำรองอัตโนมัติให้บ้านกลางตั้งแต่วันแรก</p>
+    </div>
+
+    <div class="risk mid">
+      <div class="head"><b>ฟังก์ชันหลังบ้านมีสำเนาเดียวบนคลาวด์</b><span class="chip mid">เสี่ยงกลาง</span></div>
+      <p><code>admin-create-user</code> ตั้งให้ตรวจสิทธิ์เองในโค้ด ไม่ได้ให้ระบบตรวจให้ และไม่มีไฟล์ต้นฉบับในเครื่องเลย ถ้าย้ายแบบสร้างใหม่แล้วลืมยกตัวนี้ไป จะรู้ตัวอีกทีตอนแอดมินกดเพิ่มบัญชีแล้วขึ้นข้อความผิดพลาด</p>
+      <p class="fix"><b>ก่อนย้าย</b> ดึงต้นฉบับลงมาเก็บไว้ตามขั้นตอนที่ 3 และทดสอบซ้ำหลังย้าย</p>
+    </div>
+
+    <div class="risk mid">
+      <div class="head"><b>หน้าเว็บพึ่งไลบรารีจากภายนอก 3 แห่ง</b><span class="chip mid">เสี่ยงกลาง</span></div>
+      <p>supabase-js SheetJS และ pdf.js โหลดสดจากภายนอกทุกครั้งที่เปิดเว็บ ถ้าเครือข่ายของบ้านกลางบล็อกหรือแหล่งนั้นล่ม หน้าเว็บจะเปิดไม่ขึ้นเลย ไม่ใช่แค่ฟีเจอร์ใดฟีเจอร์หนึ่งหาย</p>
+      <p class="fix"><b>ก่อนย้าย</b> ทดสอบเปิดเว็บจากเครือข่ายบ้านกลางจริง ถ้าไม่ผ่านให้ดาวน์โหลดไลบรารีมาวางไว้ข้าง ๆ ไฟล์เว็บ</p>
+    </div>
+
+    <div class="risk mid">
+      <div class="head"><b>ของตกค้างที่ต้องตัดสินใจ ไม่ใช่ยกไปทั้งดุ้น</b><span class="chip mid">เสี่ยงกลาง</span></div>
+      <p>ตาราง <code>app_user</code> ว่างเปล่าและเลิกใช้แล้ว อย่าเข้าใจผิดว่าเป็นตารางผู้ใช้จริง ส่วน <code>audit_log</code> <code>audit_holidays</code> <code>audit_clients</code> <code>audit_users</code> รวม 169 แถว เว็บไม่ได้เรียกใช้เลยและไม่มีสิทธิ์เข้าถึงตั้งไว้ด้วยซ้ำ</p>
+      <p class="fix"><b>ก่อนย้าย</b> ตัดสินใจทีละตารางว่าจะยกไปหรือเก็บเป็นไฟล์สำรองแล้วทิ้ง อย่าปล่อยให้บ้านกลางเดาเอง</p>
+    </div>
+
+    <div class="risk">
+      <div class="head"><b>เว็บเวอร์ชันเก่ายังออนไลน์อยู่</b><span class="chip grey">เสี่ยงต่ำ</span></div>
+      <p>bbt-client-master.netlify.app ยังเปิดได้แต่เป็นโค้ดเก่ากว่าหลายรุ่น และยังต่อฐานข้อมูลตัวเดียวกัน คนที่ยังคั่นหน้าไว้อาจแก้ข้อมูลจริงผ่านหน้าเว็บที่ไม่ตรงกับปัจจุบัน</p>
+      <p class="fix"><b>ก่อนย้าย</b> ปิดหรือให้พาไปยังที่อยู่ใหม่ตอนจบงาน</p>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">7</span>ให้เข้ากติกาของบ้านกลาง</h2>
+  <p class="sub">นอกจากย้ายบัญชีแล้ว ระบบยังต้องเข้าชุดกับคู่มือหน้าตา DESIGN-BBT.md และชุดเอกสารประจำโปรเจกต์ที่บ้านกลางใช้</p>
+
+  <h3>หน้าตา — ใกล้แล้ว เหลือ 4 จุด</h3>
+  <p>โครงหลักตรงคู่มืออยู่แล้ว พื้นหลังเทาอ่อน <code>#F2F2F7</code> การ์ดขาว ตัวหนังสือ <code>#1C1C1E</code> และฟอนต์ระบบที่มี Sarabun สำรองไทย ส่วนที่ยังไม่ตรงมีเท่านี้</p>
+  <div class="gap">
+    <div class="gapitem"><span class="lbl">สีแบรนด์เพี้ยนไป 1 หลัก</span> — ในเว็บใช้ <span class="swatch" style="background:#8dc63f"></span><code>#8dc63f</code> แต่คู่มือกำหนด <span class="swatch" style="background:#8cc63f"></span><code>#8cc63f</code></div>
+    <div class="gapitem"><span class="lbl">สีตัวหนังสือจาง</span> — ในเว็บใช้ <code>#6e6e73</code> คู่มือกำหนด <code>#8e8e93</code></div>
+    <div class="gapitem"><span class="lbl">สีแจ้งสถานะเป็นคนละชุด</span> — ในเว็บใช้โทนเข้มของตัวเอง (เขียว <code>#0e6e4f</code> ส้ม <code>#8a5a10</code> แดง <code>#b3372f</code>) คู่มือกำหนดโทน iOS (<code>#34c759</code> <code>#ff9f0a</code> <code>#ff3b30</code>)</div>
+    <div class="gapitem"><span class="lbl">มุมโค้ง</span> — ในเว็บส่วนใหญ่ 8–10px คู่มือกำหนดการ์ด 16px และปุ่ม 12px</div>
+  </div>
+  <p style="margin-top:1rem"><b>ข้อควรระวัง</b> อย่าไล่แก้สีทั้ง 5,489 บรรทัดไปพร้อมกับการย้ายระบบ ให้แยกเป็นคนละรอบ ย้ายให้เสร็จและตรวจผ่านก่อน แล้วค่อยจัดหน้าตาให้เข้าคู่มือ จะได้รู้ว่าถ้ามีอะไรพังเกิดจากอะไร</p>
+
+  <h3>เอกสารประจำโปรเจกต์ — ตอนนี้ยังไม่มีเลย</h3>
+  <p>บ้านกลางใช้ชุดเอกสาร 6 ไฟล์ต่อโปรเจกต์ ระบบนี้มีแค่ <code>SCHEMA_STATUS.md</code> กับ README ในโฟลเดอร์ติดตั้ง ความรู้ที่เหลืออยู่ในความทรงจำของการคุยกับ Claude ล้วน ๆ ซึ่งส่งมอบไม่ได้</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>ไฟล์</th><th>ต้องเขียนอะไรลงไปสำหรับระบบนี้</th></tr></thead>
+      <tbody>
+        <tr><td class="k">CLAUDE.md</td><td>กติกาการทำงาน คำสั่ง deploy ข้อห้ามแตะข้อมูลจริง และให้อ่าน DESIGN-BBT.md ก่อนออกแบบทุกครั้ง</td></tr>
+        <tr><td class="k">CONTEXT.md</td><td>คำศัพท์และกฎของงานจริง เช่น บทบาท Prepare Support Closing Supervisor Partner · วิธีคิดชั่วโมงที่ยึดชั่วโมง Partner เป็นหลัก · การปันค่าทำบัญชีของกลุ่มเหมา BC Constant AFCL · แบบภาษีที่ติดตามและกำหนดยื่น</td></tr>
+        <tr><td class="k">TASKS.md</td><td>งานค้างที่ยังไม่ได้ทำ เช่น แถบปิดงบที่ยังไม่ได้สร้าง</td></tr>
+        <tr><td class="k">HANDOFF.md</td><td>สถานะล่าสุดของการส่งมอบ ทำถึงขั้นตอนไหนของหัวข้อ 5</td></tr>
+        <tr><td class="k">CHANGELOG.md</td><td>ประวัติการแก้ ย้อนกลับไปเขียนจากไฟล์สำรอง <code>.bak</code> ทั้ง 8 รุ่นได้</td></tr>
+        <tr><td class="k">DECISIONS.md</td><td>คำตัดสินที่ตกลงไปแล้วพร้อมเหตุผล เช่น ทำไมย้ายจาก Netlify มา Cloudflare · ทำไมล็อกปีงานไว้ปีเดียว · ทำไมให้แอดมินเปิดบัญชีเองแทนการเปิดให้สมัคร</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">8</span>เช็กลิสต์ก่อนนัดคุยกับบ้านกลาง</h2>
+  <p class="sub">ตอบให้ได้ทุกข้อก่อน แล้วการคุยจะจบในรอบเดียว</p>
+  <ul class="check">
+    <li>บ้านกลางมีองค์กรใน Supabase อยู่แล้วหรือยัง ถ้ามีก็ใช้ทาง ก ได้เลย</li>
+    <li>อีเมลของทีมที่บ้านกลางจะใช้รูปแบบไหน ยังเป็น bebigtree.com หรือเปลี่ยน</li>
+    <li>ใครคือแอดมินหลังย้าย และสำรองอีกคนเป็นใคร</li>
+    <li>บ้านกลางจะรับดูแลค่าใช้จ่ายและการต่ออายุเองไหม ตอนนี้ฟรีทั้งหมดแต่โตขึ้นจะต้องอัปเกรด</li>
+    <li>ใครเป็นคนแก้โค้ดหน้าเว็บต่อจากนี้ และทำงานผ่านที่เก็บโค้ดไหน</li>
+    <li>จะจัดหน้าตาให้เข้าคู่มือ DESIGN-BBT.md ในรอบไหน และใครทำ</li>
+    <li>ตกลงเรื่องข้อมูลอ่อนไหว ใครเห็นค่าบริการลูกค้าและชั่วโมงพนักงานได้บ้าง</li>
+    <li>เลือกวันและช่วงเวลาที่หยุดกรอกข้อมูลได้ 1 ชั่วโมง</li>
+  </ul>
+</section>
+
+<footer>
+  จัดทำจากการอ่านโค้ดและนับข้อมูลจริงในระบบ ณ 3 กันยายน 2569 · จำนวนแถวและขนาดฐานข้อมูลเปลี่ยนตามการใช้งาน ให้นับซ้ำอีกครั้งในวันโอนจริง · หน้าตาเอกสารยึดตาม DESIGN-BBT.md
+</footer>
+
+</div>
