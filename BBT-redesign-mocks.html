@@ -1,0 +1,450 @@
+<title>หน้าตาใหม่ BBT Client Master</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700;800&display=swap">
+
+<style>
+  :root{
+    --ground:#fbfbf9;
+    --panel:#ffffff;
+    --ink:#191b1d;
+    --ink2:#3d4247;
+    --mut:#71777d;
+    --line:#e5e4e0;
+    --line2:#efeeea;
+    --accent:#4f8a1f;
+    --on-accent:#ffffff;
+    --accent-soft:#eef5e3;
+    --shadow:0 1px 2px rgba(20,25,15,.05), 0 10px 30px rgba(20,25,15,.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#131518;
+      --panel:#191c20;
+      --ink:#e9eaea;
+      --ink2:#c2c6ca;
+      --mut:#8d9399;
+      --line:#2a2e33;
+      --line2:#22262b;
+      --accent:#9ed35a;
+      --on-accent:#121611;
+      --accent-soft:#1f2a16;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#131518;
+    --panel:#191c20;
+    --ink:#e9eaea;
+    --ink2:#c2c6ca;
+    --mut:#8d9399;
+    --line:#2a2e33;
+    --line2:#22262b;
+    --accent:#9ed35a;
+    --on-accent:#121611;
+    --accent-soft:#1f2a16;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+  }
+
+  body{
+    background:var(--ground);
+    color:var(--ink);
+    font-family:"Sarabun","IBM Plex Sans Thai",-apple-system,system-ui,sans-serif;
+    font-size:16px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:44px 22px 90px;display:flex;flex-direction:column;gap:34px}
+
+  .eyebrow{font-family:"IBM Plex Sans Thai",sans-serif;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+  h1{font-family:"IBM Plex Sans Thai",sans-serif;font-size:34px;font-weight:700;line-height:1.25;letter-spacing:-.4px;text-wrap:balance;margin:8px 0 0}
+  .lede{max-width:64ch;color:var(--ink2);font-size:15.5px;margin-top:12px}
+  .lede b{color:var(--ink);font-weight:700}
+
+  .note{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;background:var(--panel);padding:13px 16px;font-size:14px;color:var(--ink2)}
+
+  /* ---- ตัวเลือกแนว ---- */
+  .picker{position:sticky;top:0;z-index:20;background:var(--ground);padding:12px 0;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .picker .lbl{font-size:13px;color:var(--mut);margin-right:4px}
+  .tab{font:inherit;font-size:14px;font-weight:600;color:var(--ink2);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 17px;cursor:pointer;transition:background .12s,border-color .12s,color .12s}
+  .tab:hover{border-color:var(--accent)}
+  .tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+  .tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .variant{display:flex;flex-direction:column;gap:26px}
+  .variant[hidden]{display:none}
+  .vhead h2{font-family:"IBM Plex Sans Thai",sans-serif;font-size:22px;font-weight:700;letter-spacing:-.2px}
+  .vhead p{color:var(--ink2);font-size:15px;max-width:64ch;margin-top:6px}
+
+  .specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .spec{background:var(--panel);padding:13px 15px}
+  .spec dt{font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+  .spec dd{font-size:14px;color:var(--ink);margin-top:3px}
+  .swatches{display:flex;gap:6px;margin-top:6px}
+  .sw{width:22px;height:22px;border-radius:6px;border:1px solid rgba(0,0,0,.12)}
+
+  .verdict{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink2);border:1px dashed var(--line);border-radius:12px;padding:12px 15px}
+  .verdict .k{flex:none;font-weight:700;font-size:13px;background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:1px 9px}
+
+  /* ---- กรอบพรีวิว: เป็น "ภาพหน้าจอ" จึงล็อกโทนสว่างเสมอ ---- */
+  .frame{border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);background:var(--panel)}
+  .framebar{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--line);background:var(--panel)}
+  .framebar .dot{width:9px;height:9px;border-radius:50%;background:var(--line)}
+  .framebar .url{font-size:12px;color:var(--mut);font-family:"IBM Plex Sans Thai",sans-serif}
+  .screen{color-scheme:light;overflow-x:auto;font-family:-apple-system,system-ui,"Sarabun",sans-serif}
+  .screen *{box-sizing:border-box}
+  .screen .pad{padding:20px}
+  .caption{font-size:13px;color:var(--mut);margin-top:-14px}
+
+  table.mock{border-collapse:collapse;width:100%;min-width:760px;font-size:13px}
+  table.mock th{font-weight:600;text-align:left;white-space:nowrap}
+  table.mock td{white-space:nowrap;font-variant-numeric:tabular-nums}
+
+  /* ================= แนว A · Notion ================= */
+  .vA .screen{background:#ffffff;color:#26282b}
+  .vA .apphead{display:flex;align-items:center;gap:10px;padding:11px 20px;border-bottom:1px solid #ededec;font-size:13px;color:#8b8d8f}
+  .vA .apphead .brand{font-weight:700;color:#26282b;font-size:14px;letter-spacing:-.2px}
+  .vA .apphead .crumb{color:#b3b5b7}
+  .vA h3.page{font-size:29px;font-weight:700;letter-spacing:-.6px;color:#26282b;margin-bottom:2px}
+  .vA .sub{font-size:13.5px;color:#8b8d8f;margin-bottom:22px}
+  .vA .row{display:flex;align-items:center;gap:14px;padding:13px 8px;border-bottom:1px solid #f0efee;cursor:pointer}
+  .vA .row:first-of-type{border-top:1px solid #f0efee}
+  .vA .row:hover{background:#f8f8f7}
+  .vA .row .ic{font-size:19px;width:26px;text-align:center;flex:none;filter:grayscale(.35)}
+  .vA .row .t{font-weight:600;font-size:14.5px;color:#26282b}
+  .vA .row .d{font-size:12.5px;color:#8b8d8f;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .vA .row .n{margin-left:auto;flex:none;font-size:12.5px;color:#8b8d8f;font-variant-numeric:tabular-nums}
+  .vA .row .n b{color:#26282b;font-weight:600}
+  .vA .row .chev{flex:none;color:#c9cac9;font-size:14px}
+  .vA .mtabs{display:flex;gap:2px;border-bottom:1px solid #ededec;margin-bottom:14px;overflow-x:auto}
+  .vA .mtabs button{font:inherit;font-size:13px;background:none;border:none;padding:7px 11px;color:#8b8d8f;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+  .vA .mtabs button.on{color:#26282b;font-weight:600;border-bottom-color:#26282b}
+  .vA table.mock th{padding:7px 10px;border-bottom:1px solid #ededec;color:#8b8d8f;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase}
+  .vA table.mock td{padding:9px 10px;border-bottom:1px solid #f4f3f2}
+  .vA tr:hover td{background:#faf9f8}
+  .vA .code{font-weight:600;color:#26282b}
+  .vA .nm{color:#8b8d8f;max-width:230px;overflow:hidden;text-overflow:ellipsis}
+  .vA .st{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:#5c6063}
+  .vA .st i{width:6px;height:6px;border-radius:50%;flex:none;font-style:normal}
+  .vA .st.ok i{background:#3aa14a} .vA .st.ok{color:#2f7a3c}
+  .vA .st.wait i{background:#d0d1d2}
+  .vA .st.late i{background:#d64541} .vA .st.late{color:#b8332f;font-weight:600}
+  .vA .st.na{color:#c3c4c5}
+  .vA .sum{display:flex;gap:26px;padding:2px 0 16px;font-size:13px;color:#8b8d8f}
+  .vA .sum b{color:#26282b;font-size:19px;font-weight:700;display:block;font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+
+  /* ================= แนว B · Linear ================= */
+  .vB .screen{background:#f7f7f8;color:#1b1c1f}
+  .vB .apphead{display:flex;align-items:center;gap:10px;padding:10px 18px;background:#fff;border-bottom:1px solid #e6e6e8;font-size:12.5px;color:#7c7f86}
+  .vB .apphead .brand{font-weight:700;color:#1b1c1f;font-size:13.5px;letter-spacing:-.1px}
+  .vB .kbd{margin-left:auto;font-size:11px;color:#8b8e95;border:1px solid #e0e0e3;background:#fafafb;border-radius:5px;padding:1px 7px}
+  .vB h3.page{font-size:19px;font-weight:600;letter-spacing:-.2px;margin-bottom:2px}
+  .vB .sub{font-size:12.5px;color:#7c7f86;margin-bottom:16px}
+  .vB .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:10px}
+  .vB .cell{background:#fff;border:1px solid #e6e6e8;border-radius:8px;padding:13px 14px;cursor:pointer;transition:border-color .1s}
+  .vB .cell:hover{border-color:#c9cace}
+  .vB .cell .top{display:flex;align-items:center;gap:8px}
+  .vB .cell .g{width:22px;height:22px;border-radius:6px;background:#f1f1f3;display:flex;align-items:center;justify-content:center;font-size:12px;color:#6b6e74;flex:none}
+  .vB .cell .t{font-size:13.5px;font-weight:600;letter-spacing:-.1px}
+  .vB .cell .d{font-size:11.5px;color:#8b8e95;line-height:1.5;margin-top:7px;min-height:34px}
+  .vB .cell .m{display:flex;align-items:baseline;gap:6px;margin-top:9px;padding-top:9px;border-top:1px solid #f0f0f2}
+  .vB .cell .m b{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.4px}
+  .vB .cell .m span{font-size:11.5px;color:#8b8e95}
+  .vB .bar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+  .vB .seg{display:flex;background:#eeeef0;border-radius:7px;padding:2px}
+  .vB .seg button{font:inherit;font-size:12px;border:none;background:none;padding:4px 11px;border-radius:5px;color:#6b6e74;cursor:pointer}
+  .vB .seg button.on{background:#fff;color:#1b1c1f;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.07)}
+  .vB .prog{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:#7c7f86}
+  .vB .prog .track{width:110px;height:5px;border-radius:3px;background:#e6e6e8;overflow:hidden}
+  .vB .prog .fill{height:100%;background:#4f8a1f;width:62%}
+  .vB .tbl{background:#fff;border:1px solid #e6e6e8;border-radius:8px;overflow:hidden}
+  .vB table.mock th{padding:7px 10px;background:#fafafb;border-bottom:1px solid #e6e6e8;color:#7c7f86;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+  .vB table.mock td{padding:6px 10px;border-bottom:1px solid #f2f2f4;font-size:12.5px}
+  .vB tr:last-child td{border-bottom:none}
+  .vB tr:hover td{background:#fafafb}
+  .vB .code{font-weight:600}
+  .vB .nm{color:#7c7f86;max-width:210px;overflow:hidden;text-overflow:ellipsis}
+  .vB .chip{display:inline-block;font-size:11px;font-weight:600;border-radius:4px;padding:2px 7px;line-height:1.5}
+  .vB .chip.ok{background:#e8f3e0;color:#3d6d1a}
+  .vB .chip.wait{background:#f1f1f3;color:#7c7f86;font-weight:500}
+  .vB .chip.late{background:#fdeae8;color:#b8332f}
+  .vB .chip.na{background:none;color:#c9cace}
+  .vB .dt{font-size:10.5px;color:#a0a3a8;margin-top:1px}
+
+  /* ================= แนว C · ยึดคู่มือ ================= */
+  .vC .screen{background:#f2f2f7;color:#1c1c1e}
+  .vC .apphead{display:flex;align-items:center;gap:10px;padding:11px 18px;background:#fff;border-bottom:1px solid #e5e5ea;font-size:13px;color:#8e8e93}
+  .vC .apphead .brand{font-weight:800;color:#1c1c1e;font-size:15px;letter-spacing:-.3px}
+  .vC .card{background:#fff;border-radius:16px;padding:18px 20px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.04)}
+  .vC h3.page{font-size:20px;font-weight:800;letter-spacing:-.3px;margin-bottom:2px}
+  .vC .sub{font-size:13px;color:#8e8e93;margin-bottom:16px}
+  .vC .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:12px}
+  .vC .cell{border:1px solid #e5e5ea;border-radius:12px;padding:14px 15px;cursor:pointer;transition:border-color .12s,background .12s}
+  .vC .cell:hover{border-color:#8cc63f;background:rgba(140,198,63,.07)}
+  .vC .cell .g{width:30px;height:30px;border-radius:9px;background:#f3faea;color:#557f25;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;margin-bottom:9px}
+  .vC .cell .t{font-size:14.5px;font-weight:700;letter-spacing:-.2px}
+  .vC .cell .d{font-size:12px;color:#8e8e93;line-height:1.55;margin-top:5px;min-height:36px}
+  .vC .cell .chip{display:inline-block;margin-top:9px;font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 10px;background:#f3faea;color:#557f25}
+  .vC .bar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+  .vC .pill{font:inherit;font-size:12.5px;border:1px solid #e5e5ea;background:#fff;border-radius:999px;padding:6px 14px;color:#3a3a3c;cursor:pointer}
+  .vC .pill.on{background:#6fae2b;border-color:#6fae2b;color:#fff;font-weight:600}
+  .vC .stats{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
+  .vC .stat{background:#fff;border:1px solid #e5e5ea;border-radius:12px;padding:6px 14px;font-size:12px;color:#8e8e93;text-align:center}
+  .vC .stat b{display:block;font-size:17px;color:#1c1c1e;font-weight:800;font-variant-numeric:tabular-nums}
+  .vC table.mock th{padding:8px 11px;border-bottom:1px solid #e5e5ea;color:#8e8e93;font-size:11.5px;font-weight:600}
+  .vC table.mock td{padding:8px 11px;border-bottom:1px solid #f0f0f4}
+  .vC tr:hover td{background:rgba(140,198,63,.07)}
+  .vC .code{font-weight:700}
+  .vC .nm{color:#8e8e93;max-width:220px;overflow:hidden;text-overflow:ellipsis}
+  .vC .chip{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:3px 10px}
+  .vC .chip.ok{background:#f3faea;color:#557f25}
+  .vC .chip.wait{background:#f2f2f7;color:#8e8e93;font-weight:500}
+  .vC .chip.late{background:#ffeceb;color:#c8322c}
+  .vC .chip.na{color:#c7c7cc}
+  .vC .dt{font-size:10.5px;color:#a0a0a5;margin-top:2px}
+
+  .foot{border-top:1px solid var(--line);padding-top:22px;display:flex;flex-direction:column;gap:12px}
+  .foot h2{font-family:"IBM Plex Sans Thai",sans-serif;font-size:19px;font-weight:700}
+  .foot ul{margin:0;padding-left:20px;color:var(--ink2);font-size:14.5px;display:flex;flex-direction:column;gap:7px}
+  .foot code{font-family:"IBM Plex Sans Thai",ui-monospace,monospace;font-size:13px;background:var(--line2);border-radius:5px;padding:1px 6px}
+
+  @media (max-width:640px){
+    h1{font-size:27px}
+    .wrap{padding:30px 15px 70px}
+    .picker{gap:6px}
+    .tab{padding:7px 13px;font-size:13px}
+  }
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important} }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">BBT Client Master · แบบร่างหน้าตา</div>
+    <h1>สามแนวหน้าตาแบบมินิมอล ให้เลือกก่อนลงมือแก้จริง</h1>
+    <p class="lede">ทั้งสามแนวเป็นสาย <b>มินิมอลจัด ๆ (Notion / Linear)</b> ตามที่เลือกไว้ ต่างกันที่ “แรงแค่ไหน” และ <b>ยังตรงคู่มือ DESIGN-BBT.md แค่ไหน</b> — แต่ละแนวโชว์สองหน้าจอเดียวกันคือ หน้าแรกเมนูหมวดงาน กับ บอร์ดภาษีรายเดือน ใช้ชื่อบริษัทจริงจากฐานข้อมูล กดสลับแนวที่แถบด้านบนเพื่อเทียบ</p>
+  </header>
+
+  <div class="note">นี่เป็นภาพร่างนิ่ง ๆ กดในหน้าจอตัวอย่างไม่ทำงาน · ยังไม่ได้แตะไฟล์เว็บจริงแม้แต่บรรทัดเดียว · ใบงาน PDF/Excel ที่ส่งให้น้อง ๆ จะคงขาวดำแบบเดิมไม่ว่าจะเลือกแนวไหน</div>
+
+  <div class="picker" role="tablist" aria-label="เลือกแนวหน้าตา">
+    <span class="lbl">เลือกแนว</span>
+    <button class="tab" role="tab" aria-selected="true" data-v="A">A · Notion สงบ</button>
+    <button class="tab" role="tab" aria-selected="false" data-v="B">B · Linear แน่น</button>
+    <button class="tab" role="tab" aria-selected="false" data-v="C">C · มินิมอลตามคู่มือ</button>
+  </div>
+
+  <!-- ============ แนว A ============ -->
+  <section class="variant vA" data-v="A">
+    <div class="vhead">
+      <h2>แนว A · Notion สงบ</h2>
+      <p>พื้นขาวล้วน ไม่มีการ์ด ไม่มีเงา เหลือแค่เส้นบาง ๆ กับตัวหนังสือ หมวดงานเปลี่ยนจากตารางการ์ดเป็น “รายการ” เรียงลงมาอ่านทีเดียวจบ สถานะภาษีเป็นจุดสีเล็ก ๆ กับตัวหนังสือ ไม่ใช่ป้ายสี</p>
+    </div>
+    <dl class="specs">
+      <div class="spec"><dt>พื้น / การ์ด</dt><dd>ขาวล้วน ไม่มีเงา เส้นคั่น 1px</dd></div>
+      <div class="spec"><dt>มุมโค้ง</dt><dd>แทบไม่มี (0–6px)</dd></div>
+      <div class="spec"><dt>สี</dt><dd>เทา-ดำเป็นหลัก เขียวเฉพาะปุ่มกด
+        <div class="swatches"><span class="sw" style="background:#ffffff"></span><span class="sw" style="background:#f0efee"></span><span class="sw" style="background:#26282b"></span><span class="sw" style="background:#3aa14a"></span><span class="sw" style="background:#d64541"></span></div></dd></div>
+      <div class="spec"><dt>ข้อมูลต่อหน้าจอ</dt><dd>น้อยลง อ่านสบายขึ้น</dd></div>
+    </dl>
+    <div class="frame">
+      <div class="framebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">bbt-client-master.pages.dev · หน้าแรก</span></div>
+      <div class="screen">
+        <div class="apphead"><span class="brand">BBT Client Master</span><span class="crumb">/</span><span>หน้าแรก</span><span class="crumb">·</span><span>ปีงาน 2569</span></div>
+        <div class="pad">
+          <h3 class="page">เลือกเรื่องที่จะทำ</h3>
+          <div class="sub">สวัสดีค่ะ SUPAPORNH · ปีงาน 2569</div>
+          <div class="row"><span class="ic">📋</span><span><span class="t">ตาราง Job ของแต่ละคน</span><div class="d">ใครถืองานบริษัทไหน · ชั่วโมงและภาระงาน · กรอกชั่วโมงรายบริษัท</div></span><span class="n"><b>18</b> คน</span><span class="chev">›</span></div>
+          <div class="row"><span class="ic">💰</span><span><span class="t">งานด้านภาษี</span><div class="d">ภาษีรายเดือน · ภาษีรายปี · สรุปรายคนว่าใครยังไม่ยื่น</div></span><span class="n">ค้าง <b>47</b> รายการ</span><span class="chev">›</span></div>
+          <div class="row"><span class="ic">📊</span><span><span class="t">งานปิดงบ</span><div class="d">ปิดงบรายเดือน และปิดงบการเงินประจำปี</div></span><span class="n">ยังไม่ได้สร้าง</span><span class="chev">›</span></div>
+          <div class="row"><span class="ic">🔍</span><span><span class="t">งานตรวจสอบบัญชี</span><div class="d">แผนงานตรวจสอบ · Stock/Interim/Final · ทีมและช่วงวันที่</div></span><span class="n"><b>22</b> ราย</span><span class="chev">›</span></div>
+          <div class="row"><span class="ic">👥</span><span><span class="t">ข้อมูลลูกค้า</span><div class="d">ทะเบียนลูกค้าทั้งหมด · ดูรายกลุ่ม · แก้ทีมผู้รับผิดชอบ</div></span><span class="n"><b>220</b> บริษัท · เปิด <b>153</b></span><span class="chev">›</span></div>
+          <div class="row"><span class="ic">📝</span><span><span class="t">งานจดทะเบียน</span><div class="d">จดทะเบียน DBD · สรรพากร · ประกันสังคม · งานชำระบัญชี</div></span><span class="n">ชำระบัญชี <b>13</b> ราย</span><span class="chev">›</span></div>
+          <div class="row"><span class="ic">⚙️</span><span><span class="t">ตั้งค่าและสิทธิ์</span><div class="d">บทบาทผู้ใช้ · ล็อกคอลัมน์ · เพิ่มบัญชีใหม่</div></span><span class="n">แอดมิน</span><span class="chev">›</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="frame">
+      <div class="framebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">bbt-client-master.pages.dev · ภาษีรายเดือน</span></div>
+      <div class="screen">
+        <div class="apphead"><span class="brand">BBT Client Master</span><span class="crumb">/</span><span>งานด้านภาษี</span><span class="crumb">/</span><span>ภาษีรายเดือน</span></div>
+        <div class="pad">
+          <h3 class="page">ภาษีรายเดือน</h3>
+          <div class="sub">งวด สิงหาคม 2569 · มุมมองรายเดือน</div>
+          <div class="sum"><span><b>153</b> บริษัทในงวดนี้</span><span><b>412</b> ยื่นแล้ว</span><span><b>47</b> ยังไม่ยื่น</span><span><b>6</b> เลยกำหนด</span></div>
+          <div class="mtabs">
+            <button>ม.ค.</button><button>ก.พ.</button><button>มี.ค.</button><button>เม.ย.</button><button>พ.ค.</button><button>มิ.ย.</button><button>ก.ค.</button><button class="on">ส.ค.</button><button>ก.ย.</button><button>ต.ค.</button><button>พ.ย.</button><button>ธ.ค.</button>
+          </div>
+          <table class="mock">
+            <thead><tr><th>ตัวย่อ</th><th>ชื่อบริษัท</th><th>Prepare</th><th>ภ.พ.30</th><th>ภ.ง.ด.1</th><th>ภ.ง.ด.3</th><th>ภ.ง.ด.53</th><th>ประกันสังคม</th></tr></thead>
+            <tbody>
+              <tr><td class="code">AAE</td><td class="nm">บริษัท แอค อาร์ต เอ็กซ์พีเรียนซ์ จำกัด</td><td>SLK</td><td><span class="st ok"><i></i>ยื่นแล้ว 12/08</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 06/08</span></td><td><span class="st na">—</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 06/08</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 14/08</span></td></tr>
+              <tr><td class="code">ACT</td><td class="nm">บริษัท แอสเซ็นเทีย คอนซัลติ้ง (ประเทศไทย) จำกัด</td><td>NTJ</td><td><span class="st ok"><i></i>ยื่นแล้ว 14/08</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 07/08</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 07/08</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 07/08</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 14/08</span></td></tr>
+              <tr><td class="code">ADM</td><td class="nm">บริษัท ออลล์ดิสโม่ จำกัด</td><td>CPJ</td><td><span class="st wait"><i></i>รอทำ · ครบ 15/09</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 05/08</span></td><td><span class="st na">—</span></td><td><span class="st wait"><i></i>รอทำ · ครบ 07/09</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 15/08</span></td></tr>
+              <tr><td class="code">AFCL</td><td class="nm">บริษัท อเมซอน ฟอลส์ จำกัด</td><td>NTJ</td><td><span class="st late"><i></i>เลยกำหนด 15/08</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 06/08</span></td><td><span class="st na">—</span></td><td><span class="st na">—</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 14/08</span></td></tr>
+              <tr><td class="code">AIC</td><td class="nm">บริษัท อคาเดมิค อินเตอร์เนชั่นแนล คอนซัลแทนซี่ (เอไอซี) กรุ๊ป จำกัด</td><td>AYS</td><td><span class="st ok"><i></i>ยื่นแล้ว 13/08</span></td><td><span class="st wait"><i></i>รอทำ · ครบ 07/09</span></td><td><span class="st wait"><i></i>รอทำ · ครบ 07/09</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 07/08</span></td><td><span class="st wait"><i></i>รอทำ · ครบ 15/09</span></td></tr>
+              <tr><td class="code">AME</td><td class="nm">สมาคมการค้า ผู้ส่งออกเอเชียและตะวันออกกลาง</td><td>SKC</td><td><span class="st na">—</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 06/08</span></td><td><span class="st na">—</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 06/08</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 14/08</span></td></tr>
+              <tr><td class="code">AMP</td><td class="nm">บริษัท อะเมซ พลัส จำกัด</td><td>MMK</td><td><span class="st ok"><i></i>ยื่นแล้ว 15/08</span></td><td><span class="st late"><i></i>เลยกำหนด 07/08</span></td><td><span class="st na">—</span></td><td><span class="st na">—</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 14/08</span></td></tr>
+              <tr><td class="code">ARC</td><td class="nm">บริษัท อัล-รี คอร์ปอเรชั่น จำกัด</td><td>SVR</td><td><span class="st ok"><i></i>ยื่นแล้ว 11/08</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 06/08</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 06/08</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 06/08</span></td><td><span class="st ok"><i></i>ยื่นแล้ว 13/08</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="verdict"><span class="k">ข้อแลก</span><span>อ่านง่ายที่สุดและดู “โตขึ้น” ที่สุด แต่ข้อมูลต่อหน้าจอน้อยลง คนที่คุ้นกับตารางแน่น ๆ จะรู้สึกว่าต้องเลื่อนเยอะขึ้น · ห่างจากคู่มือ DESIGN-BBT.md มากที่สุด (ทิ้งพื้นเทา ทิ้งการ์ดมุมโค้ง 16px ทิ้งเงา)</span></div>
+  </section>
+
+  <!-- ============ แนว B ============ -->
+  <section class="variant vB" data-v="B" hidden>
+    <div class="vhead">
+      <h2>แนว B · Linear แน่น</h2>
+      <p>โทนเครื่องมือทำงานจริง ตัวหนังสือเล็กลง แถวถี่ขึ้น เห็นข้อมูลต่อหน้าจอมากที่สุดในสามแนว สถานะเป็นป้ายสี่เหลี่ยมมุมมน 4px มีแถบความคืบหน้าให้เห็นภาพรวมงวดทันที</p>
+    </div>
+    <dl class="specs">
+      <div class="spec"><dt>พื้น / การ์ด</dt><dd>พื้นเทาอ่อน การ์ดขาวขอบคม ไม่มีเงา</dd></div>
+      <div class="spec"><dt>มุมโค้ง</dt><dd>8px ทั้งระบบ ป้ายสถานะ 4px</dd></div>
+      <div class="spec"><dt>สี</dt><dd>เทากลาง ๆ เขียวใช้แค่แถบคืบหน้า
+        <div class="swatches"><span class="sw" style="background:#f7f7f8"></span><span class="sw" style="background:#e6e6e8"></span><span class="sw" style="background:#1b1c1f"></span><span class="sw" style="background:#4f8a1f"></span><span class="sw" style="background:#b8332f"></span></div></dd></div>
+      <div class="spec"><dt>ข้อมูลต่อหน้าจอ</dt><dd>มากที่สุด (แถวสูง ~28px)</dd></div>
+    </dl>
+    <div class="frame">
+      <div class="framebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">bbt-client-master.pages.dev · หน้าแรก</span></div>
+      <div class="screen">
+        <div class="apphead"><span class="brand">BBT</span><span>Client Master</span><span>·</span><span>ปีงาน 2569</span><span class="kbd">⌘K ค้นหา</span></div>
+        <div class="pad">
+          <h3 class="page">เลือกเรื่องที่จะทำ</h3>
+          <div class="sub">SUPAPORNH · แอดมิน · ปีงาน 2569</div>
+          <div class="grid">
+            <div class="cell"><div class="top"><span class="g">JB</span><span class="t">ตาราง Job ของแต่ละคน</span></div><div class="d">ใครถืองานบริษัทไหน · ชั่วโมงและภาระงาน · กรอกชั่วโมง · สัดส่วนแบ่งชั่วโมง</div><div class="m"><b>18</b><span>คนในทีม</span></div></div>
+            <div class="cell"><div class="top"><span class="g">TX</span><span class="t">งานด้านภาษี</span></div><div class="d">ภาษีรายเดือน · ภาษีรายปี · สรุปรายคนว่าใครยังไม่ยื่นหรือแนบไฟล์ไม่ครบ</div><div class="m"><b>47</b><span>รายการค้าง</span></div></div>
+            <div class="cell"><div class="top"><span class="g">CL</span><span class="t">งานปิดงบ</span></div><div class="d">ปิดงบรายเดือน และปิดงบการเงินประจำปี — แยกดูข้างในได้</div><div class="m"><span>ยังไม่ได้สร้าง</span></div></div>
+            <div class="cell"><div class="top"><span class="g">AU</span><span class="t">งานตรวจสอบบัญชี</span></div><div class="d">แผนงานตรวจสอบ · Stock / Interim / Final · ทีมที่ลงงานและช่วงวันที่</div><div class="m"><b>22</b><span>ราย</span></div></div>
+            <div class="cell"><div class="top"><span class="g">CO</span><span class="t">ข้อมูลลูกค้า</span></div><div class="d">ทะเบียนลูกค้าทั้งหมด · ดูรายกลุ่ม · แก้ทีมผู้รับผิดชอบ</div><div class="m"><b>220</b><span>บริษัท · เปิดดำเนินการ 153</span></div></div>
+            <div class="cell"><div class="top"><span class="g">RG</span><span class="t">งานจดทะเบียน</span></div><div class="d">จดทะเบียน DBD · สรรพากร · ประกันสังคม และงานชำระบัญชี</div><div class="m"><b>13</b><span>ชำระบัญชีค้าง</span></div></div>
+            <div class="cell"><div class="top"><span class="g">ST</span><span class="t">ตั้งค่าและสิทธิ์</span></div><div class="d">บทบาทผู้ใช้ · ล็อกคอลัมน์ · เพิ่มบัญชีใหม่</div><div class="m"><span>เห็นเฉพาะแอดมิน</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="frame">
+      <div class="framebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">bbt-client-master.pages.dev · ภาษีรายเดือน</span></div>
+      <div class="screen">
+        <div class="apphead"><span class="brand">BBT</span><span>งานด้านภาษี</span><span>›</span><span>ภาษีรายเดือน</span><span class="kbd">ส.ค. 2569</span></div>
+        <div class="pad">
+          <div class="bar">
+            <div class="seg"><button class="on">รายเดือน</button><button>ทั้งปี</button></div>
+            <div class="seg"><button>ก.ค.</button><button class="on">ส.ค.</button><button>ก.ย.</button></div>
+            <div class="prog"><span>ยื่นแล้ว 412 / 459</span><span class="track"><span class="fill" style="width:90%"></span></span><span>6 เลยกำหนด</span></div>
+          </div>
+          <div class="tbl">
+            <table class="mock">
+              <thead><tr><th>ตัวย่อ</th><th>ชื่อบริษัท</th><th>Prepare</th><th>ภ.พ.30</th><th>ภ.ง.ด.1</th><th>ภ.ง.ด.3</th><th>ภ.ง.ด.53</th><th>ประกันสังคม</th></tr></thead>
+              <tbody>
+                <tr><td class="code">AAE</td><td class="nm">บริษัท แอค อาร์ต เอ็กซ์พีเรียนซ์ จำกัด</td><td>SLK</td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">12/08/69</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">06/08/69</div></td><td><span class="chip na">—</span></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">06/08/69</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">14/08/69</div></td></tr>
+                <tr><td class="code">ACT</td><td class="nm">บริษัท แอสเซ็นเทีย คอนซัลติ้ง (ประเทศไทย) จำกัด</td><td>NTJ</td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">14/08/69</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">07/08/69</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">07/08/69</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">07/08/69</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">14/08/69</div></td></tr>
+                <tr><td class="code">ADM</td><td class="nm">บริษัท ออลล์ดิสโม่ จำกัด</td><td>CPJ</td><td><span class="chip wait">รอทำ</span><div class="dt">ครบ 15/09</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">05/08/69</div></td><td><span class="chip na">—</span></td><td><span class="chip wait">รอทำ</span><div class="dt">ครบ 07/09</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">15/08/69</div></td></tr>
+                <tr><td class="code">AFCL</td><td class="nm">บริษัท อเมซอน ฟอลส์ จำกัด</td><td>NTJ</td><td><span class="chip late">เลยกำหนด</span><div class="dt">ครบ 15/08</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">06/08/69</div></td><td><span class="chip na">—</span></td><td><span class="chip na">—</span></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">14/08/69</div></td></tr>
+                <tr><td class="code">AIC</td><td class="nm">บริษัท อคาเดมิค อินเตอร์เนชั่นแนล คอนซัลแทนซี่ (เอไอซี) กรุ๊ป จำกัด</td><td>AYS</td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">13/08/69</div></td><td><span class="chip wait">รอทำ</span><div class="dt">ครบ 07/09</div></td><td><span class="chip wait">รอทำ</span><div class="dt">ครบ 07/09</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">07/08/69</div></td><td><span class="chip wait">รอทำ</span><div class="dt">ครบ 15/09</div></td></tr>
+                <tr><td class="code">AME</td><td class="nm">สมาคมการค้า ผู้ส่งออกเอเชียและตะวันออกกลาง</td><td>SKC</td><td><span class="chip na">—</span></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">06/08/69</div></td><td><span class="chip na">—</span></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">06/08/69</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">14/08/69</div></td></tr>
+                <tr><td class="code">AMP</td><td class="nm">บริษัท อะเมซ พลัส จำกัด</td><td>MMK</td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">15/08/69</div></td><td><span class="chip late">เลยกำหนด</span><div class="dt">ครบ 07/08</div></td><td><span class="chip na">—</span></td><td><span class="chip na">—</span></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">14/08/69</div></td></tr>
+                <tr><td class="code">ARC</td><td class="nm">บริษัท อัล-รี คอร์ปอเรชั่น จำกัด</td><td>SVR</td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">11/08/69</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">06/08/69</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">06/08/69</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">06/08/69</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">13/08/69</div></td></tr>
+                <tr><td class="code">ART</td><td class="nm">บริษัท อาร์โรซ (ไทยแลนด์) จำกัด</td><td>SLK</td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">14/08/69</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">07/08/69</div></td><td><span class="chip na">—</span></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">07/08/69</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">14/08/69</div></td></tr>
+                <tr><td class="code">ASC</td><td class="nm">บริษัท แอสโซซิเอเต็ด เคาน์เซลเลอร์ส จำกัด</td><td>WRL</td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">13/08/69</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">06/08/69</div></td><td><span class="chip na">—</span></td><td><span class="chip na">—</span></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">14/08/69</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="verdict"><span class="k">ข้อแลก</span><span>เหมาะกับคนที่ต้องกวาดสายตาหลายสิบบริษัทต่อวัน เห็นเยอะที่สุด แต่ตัวหนังสือเล็กลงจริง ๆ ถ้าน้อง ๆ ใช้มือถือเยอะจะกดยากขึ้น · ห่างจากคู่มือปานกลาง (พื้นเทาแต่เป็นคนละเฉด การ์ดมุม 8px ไม่มีเงา)</span></div>
+  </section>
+
+  <!-- ============ แนว C ============ -->
+  <section class="variant vC" data-v="C" hidden>
+    <div class="vhead">
+      <h2>แนว C · มินิมอลตามคู่มือ</h2>
+      <p>คงโครงเดิมตาม DESIGN-BBT.md ทุกข้อ (พื้น <code>#f2f2f7</code> การ์ดขาวมุม 16px เงาสองชั้น เขียว <code>#6fae2b</code> เป็นปุ่มหลัก) แล้ว “ลดของ” แทน — ตัดอิโมจิสีออกเหลือตัวย่อในกล่องเขียวจาง จัดลำดับตัวหนังสือใหม่ ป้ายสถานะเป็นแคปซูลชุดเดียวทั้งระบบ</p>
+    </div>
+    <dl class="specs">
+      <div class="spec"><dt>พื้น / การ์ด</dt><dd>ตามคู่มือเป๊ะ — เทาอ่อน + การ์ดขาวเงาบาง</dd></div>
+      <div class="spec"><dt>มุมโค้ง</dt><dd>การ์ด 16px · ปุ่ม 12px (แก้ที่เว็บเพี้ยนอยู่)</dd></div>
+      <div class="spec"><dt>สี</dt><dd>ชุดคู่มือทั้งหมด ไม่เพิ่มสีใหม่
+        <div class="swatches"><span class="sw" style="background:#f2f2f7"></span><span class="sw" style="background:#e5e5ea"></span><span class="sw" style="background:#1c1c1e"></span><span class="sw" style="background:#8cc63f"></span><span class="sw" style="background:#ff3b30"></span></div></dd></div>
+      <div class="spec"><dt>ข้อมูลต่อหน้าจอ</dt><dd>เท่าเดิม แต่ตาไม่ล้า</dd></div>
+    </dl>
+    <div class="frame">
+      <div class="framebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">bbt-client-master.pages.dev · หน้าแรก</span></div>
+      <div class="screen">
+        <div class="apphead"><span class="brand">BBT Client Master</span><span>ปีงาน 2569</span><span>·</span><span>SUPAPORNH</span></div>
+        <div class="pad">
+          <div class="card">
+            <h3 class="page">เลือกเรื่องที่จะทำ</h3>
+            <div class="sub">กดหมวดที่ต้องการ แล้วแถบด้านบนจะแสดงเฉพาะแถบของหมวดนั้น</div>
+            <div class="grid">
+              <div class="cell"><div class="g">JB</div><div class="t">ตาราง Job ของแต่ละคน</div><div class="d">ใครถืองานบริษัทไหน · ชั่วโมงและภาระงาน · กรอกชั่วโมงรายบริษัท</div><span class="chip">18 คน</span></div>
+              <div class="cell"><div class="g">TX</div><div class="t">งานด้านภาษี</div><div class="d">ภาษีรายเดือน · ภาษีรายปี · สรุปรายคนว่าใครยังไม่ยื่น</div><span class="chip">ค้าง 47 รายการ</span></div>
+              <div class="cell"><div class="g">CL</div><div class="t">งานปิดงบ</div><div class="d">ปิดงบรายเดือน และปิดงบการเงินประจำปี</div><span class="chip">ยังไม่ได้สร้าง</span></div>
+              <div class="cell"><div class="g">AU</div><div class="t">งานตรวจสอบบัญชี</div><div class="d">แผนงานตรวจสอบ · Stock/Interim/Final · ทีมและช่วงวันที่</div><span class="chip">22 ราย</span></div>
+              <div class="cell"><div class="g">CO</div><div class="t">ข้อมูลลูกค้า</div><div class="d">ทะเบียนลูกค้าทั้งหมด · ดูรายกลุ่ม · แก้ทีมผู้รับผิดชอบ</div><span class="chip">220 บริษัท · เปิด 153</span></div>
+              <div class="cell"><div class="g">RG</div><div class="t">งานจดทะเบียน</div><div class="d">จดทะเบียน DBD · สรรพากร · ประกันสังคม · ชำระบัญชี</div><span class="chip">ชำระบัญชี 13 ราย</span></div>
+              <div class="cell"><div class="g">ST</div><div class="t">ตั้งค่าและสิทธิ์</div><div class="d">บทบาทผู้ใช้ · ล็อกคอลัมน์ · เพิ่มบัญชีใหม่</div><span class="chip">แอดมิน</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="frame">
+      <div class="framebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">bbt-client-master.pages.dev · ภาษีรายเดือน</span></div>
+      <div class="screen">
+        <div class="apphead"><span class="brand">BBT Client Master</span><span>งานด้านภาษี</span><span>·</span><span>ภาษีรายเดือน</span></div>
+        <div class="pad">
+          <div class="bar">
+            <button class="pill on">รายเดือน</button><button class="pill">ทั้งปี</button><button class="pill">ส.ค. 2569</button>
+            <div class="stats">
+              <div class="stat"><b>153</b>บริษัท</div>
+              <div class="stat"><b>412</b>ยื่นแล้ว</div>
+              <div class="stat"><b>47</b>ยังไม่ยื่น</div>
+              <div class="stat"><b>6</b>เลยกำหนด</div>
+            </div>
+          </div>
+          <div class="card" style="padding:6px 10px 10px">
+            <table class="mock">
+              <thead><tr><th>ตัวย่อ</th><th>ชื่อบริษัท</th><th>Prepare</th><th>ภ.พ.30</th><th>ภ.ง.ด.1</th><th>ภ.ง.ด.3</th><th>ภ.ง.ด.53</th><th>ประกันสังคม</th></tr></thead>
+              <tbody>
+                <tr><td class="code">AAE</td><td class="nm">บริษัท แอค อาร์ต เอ็กซ์พีเรียนซ์ จำกัด</td><td>SLK</td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">12/08/2569</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">06/08/2569</div></td><td><span class="chip na">—</span></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">06/08/2569</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">14/08/2569</div></td></tr>
+                <tr><td class="code">ACT</td><td class="nm">บริษัท แอสเซ็นเทีย คอนซัลติ้ง (ประเทศไทย) จำกัด</td><td>NTJ</td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">14/08/2569</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">07/08/2569</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">07/08/2569</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">07/08/2569</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">14/08/2569</div></td></tr>
+                <tr><td class="code">ADM</td><td class="nm">บริษัท ออลล์ดิสโม่ จำกัด</td><td>CPJ</td><td><span class="chip wait">รอทำ</span><div class="dt">ครบ 15/09/2569</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">05/08/2569</div></td><td><span class="chip na">—</span></td><td><span class="chip wait">รอทำ</span><div class="dt">ครบ 07/09/2569</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">15/08/2569</div></td></tr>
+                <tr><td class="code">AFCL</td><td class="nm">บริษัท อเมซอน ฟอลส์ จำกัด</td><td>NTJ</td><td><span class="chip late">เลยกำหนด</span><div class="dt">ครบ 15/08/2569</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">06/08/2569</div></td><td><span class="chip na">—</span></td><td><span class="chip na">—</span></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">14/08/2569</div></td></tr>
+                <tr><td class="code">AIC</td><td class="nm">บริษัท อคาเดมิค อินเตอร์เนชั่นแนล คอนซัลแทนซี่ (เอไอซี) กรุ๊ป จำกัด</td><td>AYS</td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">13/08/2569</div></td><td><span class="chip wait">รอทำ</span><div class="dt">ครบ 07/09/2569</div></td><td><span class="chip wait">รอทำ</span><div class="dt">ครบ 07/09/2569</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">07/08/2569</div></td><td><span class="chip wait">รอทำ</span><div class="dt">ครบ 15/09/2569</div></td></tr>
+                <tr><td class="code">AME</td><td class="nm">สมาคมการค้า ผู้ส่งออกเอเชียและตะวันออกกลาง</td><td>SKC</td><td><span class="chip na">—</span></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">06/08/2569</div></td><td><span class="chip na">—</span></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">06/08/2569</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">14/08/2569</div></td></tr>
+                <tr><td class="code">AMP</td><td class="nm">บริษัท อะเมซ พลัส จำกัด</td><td>MMK</td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">15/08/2569</div></td><td><span class="chip late">เลยกำหนด</span><div class="dt">ครบ 07/08/2569</div></td><td><span class="chip na">—</span></td><td><span class="chip na">—</span></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">14/08/2569</div></td></tr>
+                <tr><td class="code">ARC</td><td class="nm">บริษัท อัล-รี คอร์ปอเรชั่น จำกัด</td><td>SVR</td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">11/08/2569</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">06/08/2569</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">06/08/2569</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">06/08/2569</div></td><td><span class="chip ok">ยื่นแล้ว</span><div class="dt">13/08/2569</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="verdict"><span class="k">ข้อแลก</span><span>เสี่ยงน้อยที่สุด ทำเสร็จเร็วที่สุด และยังเป็นทีมเดียวกับ BBT Reimburse — แต่ถ้าอยากได้ความรู้สึก “เปลี่ยนไปเลย” แนวนี้จะดูเหมือนเว็บเดิมที่จัดบ้านใหม่ มากกว่าเว็บใหม่</span></div>
+  </section>
+
+  <div class="foot">
+    <h2>ถ้าเลือกแล้วจะเกิดอะไรต่อ</h2>
+    <ul>
+      <li>ทุกแนวแก้ที่ชั้น CSS เป็นหลัก — ตัวแปรสีอยู่ที่ <code>:root</code> ในไฟล์ <code>webapp/index.html</code> ฟังก์ชันคำนวณและข้อมูลไม่ถูกแตะ</li>
+      <li>ทำเป็นชุดเดียวแล้ว deploy รอบเดียวตามกติกาที่วางไว้ ทดสอบด้วย <code>_test_tmp/test_now.html</code> ก่อนขึ้นจริงเสมอ</li>
+      <li>ใบงาน PDF และไฟล์ Excel ที่ส่งให้น้อง ๆ คงขาวดำอ่านง่ายแบบเดิม ไม่เปลี่ยนตาม</li>
+      <li>ถ้าเลือกแนว A หรือ B ต้องอัปเดต <code>DESIGN-BBT.md</code> ตามด้วย ไม่งั้นระบบอื่นในสำนักงานจะหลุดจากกันเอง — บอกได้เลยว่าจะให้อัปเดตคู่มือ หรือให้ถือว่าเว็บนี้เป็นข้อยกเว้น</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('.picker .tab');
+  const panes = document.querySelectorAll('.variant');
+  tabs.forEach(t => t.addEventListener('click', () => {
+    tabs.forEach(x => x.setAttribute('aria-selected', String(x === t)));
+    panes.forEach(p => { p.hidden = p.dataset.v !== t.dataset.v; });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }));
+</script>

@@ -2,7 +2,6 @@
 *.xlsx
 *.csv
 สำรองฐานข้อมูล-*/
-BBT-redesign-mocks.html
 
 # ===== ไฟล์สำรอง / ทดสอบ =====
 webapp/*.bak*
@@ -13,6 +12,3 @@ _test_tmp/
 .wrangler/
 .claude/settings.local.json
 node_modules/
-
-# มีชื่อลูกค้าจริง 286 ราย ฝังใน INSERT (โครงสร้างอยู่ใน schema.sql แล้ว)
-supabase-setup/bbt_setup_all.sql
